@@ -1,0 +1,12 @@
+flask
+opencv-python
+tensorflow
+mediapipe
+numpy
+livekit
+livekit-agents
+openai
+deepgram-sdk
+cartesia
+python-dotenv
+"livekit-agents[openai,cartesia,deepgram,silero]~=1.0"
