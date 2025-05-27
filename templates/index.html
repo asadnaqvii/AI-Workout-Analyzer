@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fitness Trainer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Fitness Trainer</h1>
+      <p>AI-powered exercise tracking and feedback</p>
+    </header>
+
+    <div class="main-content">
+      <!-- live video from OpenCV -->
+      <div class="video-container">
+        <img id="video" src="{{ url_for('video_feed') }}" alt="Fitness Tracker Video Feed">
+      </div>
+
+      <!-- controls & status -->
+      <div class="controls">
+        <!-- Exercise selection -->
+        <div class="exercise-selection">
+          <h2>Select Exercise</h2>
+          <div class="exercise-options">
+            <div class="exercise-option" data-exercise="squat">
+              <img src="{{ url_for('static', filename='images/squat.png') }}" alt="Squat"><h3>Squat</h3>
+            </div>
+            <div class="exercise-option" data-exercise="push_up">
+              <img src="{{ url_for('static', filename='images/push_up.png') }}" alt="Push Up"><h3>Push Up</h3>
+            </div>
+            <div class="exercise-option" data-exercise="hammer_curl">
+              <img src="{{ url_for('static', filename='images/hammer_curl.png') }}" alt="Hammer Curl"><h3>Hammer Curl</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workout config -->
+        <div class="exercise-config">
+          <h2>Configure Workout</h2>
+          <div class="config-inputs">
+            <div class="input-group">
+              <label for="sets">Sets:</label>
+              <input type="number" id="sets" min="1" max="10" value="3">
+            </div>
+            <div class="input-group">
+              <label for="reps">Repetitions:</label>
+              <input type="number" id="reps" min="1" max="30" value="10">
+            </div>
+          </div>
+        </div>
+
+        <!-- Start / Stop -->
+        <div class="action-buttons">
+          <button id="start-btn" class="btn primary-btn">Start Workout</button>
+          <button id="stop-btn" class="btn secondary-btn" disabled>Stop Workout</button>
+        </div>
+
+        <!-- Current status -->
+        <div class="workout-status">
+          <h2>Current Status</h2>
+          <div class="status-display">
+            <div class="status-item">
+              <span class="status-label">Exercise:</span>
+              <span id="current-exercise" class="status-value">None</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Set:</span>
+              <span id="current-set" class="status-value">0 / 0</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Repetitions:</span>
+              <span id="current-reps" class="status-value">0 / 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transcript only -->
+        <div class="livekit-section">
+          <h2>Transcript</h2>
+          <div id="transcript" class="transcript-box">—</div>
+        </div>
+      </div> <!-- /controls -->
+    </div> <!-- /main-content -->
+  </div> <!-- /container -->
+
+  <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
