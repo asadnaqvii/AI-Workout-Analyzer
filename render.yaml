@@ -1,18 +1,10 @@
-# render.yaml (at repo root)
+# render.yaml
 
 services:
-  - name: ai-workout-analyzer
-    type: web
-    env: python
+  - type: web               # This is a web service (HTTP) so Render will route traffic here
+    name: ai-workout-analyzer
+    env: docker
     plan: free
-    region: osaka
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn web.app:app --host 0.0.0.0 --port $PORT
-
-  - name: ai-workout-coach-agent
-    type: worker
-    env: python
-    plan: free
-    region: osaka
-    buildCommand: pip install -r requirements.txt
-    startCommand: python coach_agent.py
+    region: oregon
+    dockerfilePath: Dockerfile
+    autoDeploy: true        # Rebuild + redeploy on every git push
