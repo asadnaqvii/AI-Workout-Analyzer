@@ -288,5 +288,7 @@ if __name__ == "__main__":
         daemon=True
     ).start()
 
-    logger.info("Flask running at http://127.0.0.1:5000")
-    app.run(debug=True)
+    port = int(os.getenv("PORT", 5000))
+    logger.info(f"Flask running at http://0.0.0.0:{port}")
+    app.run(host="0.0.0.0", port=port, debug=True)
+
