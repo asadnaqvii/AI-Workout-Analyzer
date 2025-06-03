@@ -157,3 +157,40 @@ document.addEventListener("DOMContentLoaded", () => {
     resetUI();
   });
 });
+
+
+// ── Camera‐fallback for headless Render containers ────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const videoEl = document.getElementById('workout-video');   // <video> or <img>
+  if (!videoEl) return;
+
+  // 1) Try server‐stream (/video_feed) first
+  const serverFeed = '/video_feed';
+  fetch(serverFeed, { method: 'HEAD' })
+    .then(() => {
+      // If it exists, set <video> or <img> src to /video_feed
+      videoEl.src = serverFeed;
+    })
+    .catch(() => {
+      // ignore – server-side feed may be disabled in Render
+    });
+
+  // 2) If running on Render (hostname ends with onrender.com), fallback to client webcam
+  if (window.location.hostname.endsWith('onrender.com')) {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        // If videoEl is <video>, assign stream; if <img>, replace with a <video>:
+        if (videoEl.tagName.toLowerCase() === 'video') {
+          videoEl.srcObject = stream;
+        } else {
+          const newVideo = document.createElement('video');
+          newVideo.id = 'workout-video';
+          newVideo.autoplay = true;
+          newVideo.playsInline = true;
+          newVideo.srcObject = stream;
+          videoEl.replaceWith(newVideo);
+        }
+      })
+      .catch(console.error);
+  }
+});
