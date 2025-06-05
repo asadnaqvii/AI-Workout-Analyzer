@@ -323,94 +323,94 @@ def token():
         logger.exception("LiveKit token generation failed")
         return jsonify({"error": str(e)}), 500
 
-# ── Original routes (index, dashboard, video_feed, etc.) ───────────────
-@app.route("/")
-def index():
-    return render_template("index.html")
+# # ── Original routes (index, dashboard, video_feed, etc.) ───────────────
+# @app.route("/")
+# def index():
+#     return render_template("index.html")
 
-@app.route("/dashboard")
-def dashboard():
-    recent = workout_logger.get_recent_workouts(5)
-    weekly = workout_logger.get_weekly_stats()
-    user   = workout_logger.get_user_stats()
-    table = [{
-        "date": w["date"],
-        "exercise": w["exercise_type"].replace("_"," ").title(),
-        "sets": w["sets"],
-        "reps": w["reps"],
-        "duration": f"{w['duration_seconds']//60}:{w['duration_seconds']%60:02d}"
-    } for w in recent]
-    return render_template("dashboard.html",
-        recent_workouts=table,
-        weekly_workouts=sum(d["workout_count"] for d in weekly.values()),
-        total_workouts=user["total_workouts"],
-        total_exercises=user["total_exercises"],
-        streak_days=user["streak_days"]
-    )
+# @app.route("/dashboard")
+# def dashboard():
+#     recent = workout_logger.get_recent_workouts(5)
+#     weekly = workout_logger.get_weekly_stats()
+#     user   = workout_logger.get_user_stats()
+#     table = [{
+#         "date": w["date"],
+#         "exercise": w["exercise_type"].replace("_"," ").title(),
+#         "sets": w["sets"],
+#         "reps": w["reps"],
+#         "duration": f"{w['duration_seconds']//60}:{w['duration_seconds']%60:02d}"
+#     } for w in recent]
+#     return render_template("dashboard.html",
+#         recent_workouts=table,
+#         weekly_workouts=sum(d["workout_count"] for d in weekly.values()),
+#         total_workouts=user["total_workouts"],
+#         total_exercises=user["total_exercises"],
+#         streak_days=user["streak_days"]
+#     )
 
-@app.route("/video_feed")
-def video_feed():
-    return Response(generate_frames(),
-                    mimetype="multipart/x-mixed-replace; boundary=frame")
+# @app.route("/video_feed")
+# def video_feed():
+#     return Response(generate_frames(),
+#                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
-@app.route("/start_exercise", methods=["POST"])
-def start_exercise():
-    global exercise_running, current_exercise, current_exercise_data
-    global exercise_counter, exercise_goal, sets_completed, sets_goal, workout_start_time
+# @app.route("/start_exercise", methods=["POST"])
+# def start_exercise():
+#     global exercise_running, current_exercise, current_exercise_data
+#     global exercise_counter, exercise_goal, sets_completed, sets_goal, workout_start_time
 
-    data = request.json
-    exercise_type = data.get("exercise_type")
-    sets_goal     = int(data.get("sets",3))
-    exercise_goal = int(data.get("reps",10))
+#     data = request.json
+#     exercise_type = data.get("exercise_type")
+#     sets_goal     = int(data.get("sets",3))
+#     exercise_goal = int(data.get("reps",10))
 
-    initialize_camera()
-    exercise_counter = sets_completed = 0
-    workout_start_time = time.time()
+#     initialize_camera()
+#     exercise_counter = sets_completed = 0
+#     workout_start_time = time.time()
 
-    if exercise_type == "squat":
-        current_exercise = Squat()
-    elif exercise_type == "push_up":
-        current_exercise = PushUp()
-    elif exercise_type == "hammer_curl":
-        current_exercise = HammerCurl()
-    else:
-        return jsonify({"success":False,"error":"Invalid exercise type"})
+#     if exercise_type == "squat":
+#         current_exercise = Squat()
+#     elif exercise_type == "push_up":
+#         current_exercise = PushUp()
+#     elif exercise_type == "hammer_curl":
+#         current_exercise = HammerCurl()
+#     else:
+#         return jsonify({"success":False,"error":"Invalid exercise type"})
 
-    current_exercise_data = {"type": exercise_type, "sets": sets_goal, "reps": exercise_goal}
-    exercise_running = True
-    return jsonify({"success": True})
+#     current_exercise_data = {"type": exercise_type, "sets": sets_goal, "reps": exercise_goal}
+#     exercise_running = True
+#     return jsonify({"success": True})
 
-@app.route("/stop_exercise", methods=["POST"])
-def stop_exercise():
-    global exercise_running, workout_start_time
-    exercise_running = False
-    duration = int(time.time() - workout_start_time) if workout_start_time else 0
+# @app.route("/stop_exercise", methods=["POST"])
+# def stop_exercise():
+#     global exercise_running, workout_start_time
+#     exercise_running = False
+#     duration = int(time.time() - workout_start_time) if workout_start_time else 0
 
-    workout_logger.log_workout(
-        exercise_type=current_exercise_data["type"],
-        sets=sets_completed + (1 if exercise_counter>0 else 0),
-        reps=exercise_goal,
-        duration_seconds=duration
-    )
-    return jsonify({"success":True, "duration": duration})
+#     workout_logger.log_workout(
+#         exercise_type=current_exercise_data["type"],
+#         sets=sets_completed + (1 if exercise_counter>0 else 0),
+#         reps=exercise_goal,
+#         duration_seconds=duration
+#     )
+#     return jsonify({"success":True, "duration": duration})
 
-@app.route("/get_status")
-def get_status():
-    return jsonify({
-        "exercise_running": exercise_running,
-        "current_reps": exercise_counter,
-        "current_set": (sets_completed+1) if exercise_running else 0,
-        "total_sets": sets_goal,
-        "rep_goal": exercise_goal
-    })
+# @app.route("/get_status")
+# def get_status():
+#     return jsonify({
+#         "exercise_running": exercise_running,
+#         "current_reps": exercise_counter,
+#         "current_set": (sets_completed+1) if exercise_running else 0,
+#         "total_sets": sets_goal,
+#         "rep_goal": exercise_goal
+#     })
 
-@app.route("/latest_metrics")
-def latest_metrics_api():
-    return jsonify(latest_metrics)
+# @app.route("/latest_metrics")
+# def latest_metrics_api():
+#     return jsonify(latest_metrics)
 
-@app.route("/profile")
-def profile():
-    return "Profile page - Coming soon!"
+# @app.route("/profile")
+# def profile():
+#     return "Profile page - Coming soon!"
 
 # ── Launch Flask + LiveKit agent thread ───────────────────────────────
 if __name__ == "__main__":
