@@ -424,10 +424,6 @@ if __name__ == "__main__":
         daemon=True
     ).start()
 
-    logger.info("Flask running at http://127.0.0.1:5000")
-    app.run(debug=True)
-
-
 
 # ── Embedded HTML + JS ─────────────────────────────────────────────────
 # This single‐page UI replicates your original controls (Start/Stop, sets/reps,
