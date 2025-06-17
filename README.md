@@ -1,6 +1,6 @@
 # Fitness Trainer with Pose Estimation
 
-An AI-powered web application that tracks exercises using computer vision and provides real-time feedback.
+An AI-powered web application that tracks exercises using computer vision and provides real-time feedback using dedicated livekit voice agent.
 
 ## Features
 
@@ -11,28 +11,6 @@ An AI-powered web application that tracks exercises using computer vision and pr
 - Progress tracking
 - Web interface for easy access
 
-## Installation
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/fitness-trainer-pose-estimation.git
-   cd fitness-trainer-pose-estimation
-   ```
-
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-3. Set up the static folder structure:
-   ```
-   mkdir -p static/images
-   ```
-
-4. Add exercise images to the static/images folder:
-   - squat.png
-   - push_up.png
-   - hammer_curl.png
 
 ## Usage
 
